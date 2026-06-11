@@ -12,6 +12,8 @@ public interface ProductService {
 
     List<Product> searchProducts(String keyword);
 
+    List<Product> getProductsByCategoryId(Long categoryId);
+
     Product createProduct(CreateProductRequest request);
 
     ProductVariant addVariant(Long productId, ProductVariant variant);

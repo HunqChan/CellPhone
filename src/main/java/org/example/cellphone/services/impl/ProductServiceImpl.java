@@ -34,6 +34,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> getProductsByCategoryId(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId);
+    }
+
+    @Override
     public Product createProduct(CreateProductRequest request) {
         // Bước 1: Tìm Category theo categoryId từ request, nếu không tồn tại thì ném lỗi
         Category category = categoryRepository.findById(request.getCategoryId())
