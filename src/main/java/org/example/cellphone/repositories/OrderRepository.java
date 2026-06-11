@@ -10,4 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByUserId(Long userId);
+
+    // Lấy danh sách đơn hàng theo userId, sắp xếp theo ngày đặt mới nhất
+    List<Order> findByUserIdOrderByOrderDateDesc(Long userId);
 }

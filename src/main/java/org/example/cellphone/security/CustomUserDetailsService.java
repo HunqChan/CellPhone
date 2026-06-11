@@ -4,7 +4,7 @@ import java.util.Collections;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cellphone.entities.User;
-import org.example.cellphone.repository.UserRepository;
+import org.example.cellphone.repositories.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
