@@ -28,7 +28,7 @@ public class OrderController {
     /**
      * POST /api/orders/checkout
      * Đặt hàng từ giỏ hàng của User.
-     * Request Body: { "userId": 1, "shippingAddress": "123 Đường ABC, Q.1, TP.HCM" }
+     * Request Body: { "userId": 1, "addressId": 5 }
      */
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(@RequestBody CheckoutRequest request) {

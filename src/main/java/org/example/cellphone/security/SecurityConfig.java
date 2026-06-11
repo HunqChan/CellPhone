@@ -33,6 +33,13 @@ public class SecurityConfig {
                         // Cho phép xem sản phẩm và danh mục mà không cần đăng nhập
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/categories/**").permitAll()
+                        // Cho phép truy cập danh sách tỉnh/thành phố, xã/phường (cho dropdown)
+                        .requestMatchers("/api/locations/**").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         // Tất cả các request còn lại phải đăng nhập
                         .anyRequest().authenticated()
                 )

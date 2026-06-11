@@ -43,7 +43,6 @@ public class AuthServiceImpl implements AuthService {
         // Mã hóa mật khẩu trước khi lưu (BCrypt hash, không lưu plaintext)
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setPhone(request.getPhone());
-        user.setAddress(request.getAddress());
         user.setRole(customerRole);
 
         // Bước 4: Lưu user vào database

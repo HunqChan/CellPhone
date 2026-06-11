@@ -11,5 +11,5 @@ public class CheckoutRequest {
 
     private Long userId;
 
-    private String shippingAddress;
+    private Long addressId;
 }

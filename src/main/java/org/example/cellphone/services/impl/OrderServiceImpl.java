@@ -6,12 +6,14 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cellphone.dto.CheckoutRequest;
+import org.example.cellphone.entities.Address;
 import org.example.cellphone.entities.Cart;
 import org.example.cellphone.entities.CartItem;
 import org.example.cellphone.entities.Order;
 import org.example.cellphone.entities.OrderItem;
 import org.example.cellphone.entities.ProductVariant;
 import org.example.cellphone.entities.User;
+import org.example.cellphone.repositories.AddressRepository;
 import org.example.cellphone.repositories.CartRepository;
 import org.example.cellphone.repositories.OrderRepository;
 import org.example.cellphone.repositories.ProductVariantRepository;
@@ -28,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
     private final ProductVariantRepository productVariantRepository;
+    private final AddressRepository addressRepository;
 
     /**
      * Xử lý đặt hàng (Checkout).
@@ -72,10 +75,20 @@ public class OrderServiceImpl implements OrderService {
             productVariantRepository.save(variant);
         }
 
-        // ======== BƯỚC 4: Tạo Order ========
+        // ======== BƯỚC 4: Lookup Address từ DB ========
+        Address address = addressRepository.findById(request.getAddressId())
+                .orElseThrow(() -> new RuntimeException(
+                        "Không tìm thấy địa chỉ với id: " + request.getAddressId()));
+
+        // Build full address string: "chi tiết, xã, tỉnh"
+        String fullAddress = address.getDetailAddress()
+                + ", " + address.getWard().getName()
+                + ", " + address.getProvince().getName();
+
+        // ======== BƯỚC 5: Tạo Order ========
         Order order = new Order();
         order.setUser(user);
-        order.setShippingAddress(request.getShippingAddress());
+        order.setShippingAddress(fullAddress);
         order.setOrderDate(LocalDateTime.now());
         order.setStatus("PENDING"); // Trạng thái mặc định
 
