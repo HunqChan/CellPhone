@@ -1,6 +1,7 @@
 package org.example.cellphone.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,5 +29,6 @@ public class AttributeValue {
     private Attribute attribute;
 
     @ManyToMany(mappedBy = "attributes")
+    @JsonIgnore
     private Set<ProductVariant> productVariants;
 }

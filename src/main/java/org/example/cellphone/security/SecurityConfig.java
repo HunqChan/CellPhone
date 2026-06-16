@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/locations/**").permitAll()
                         // Cho phép đọc danh sách thuộc tính (màu sắc, dung lượng) cho bộ lọc
                         .requestMatchers("/api/attributes/**").permitAll()
+                        .requestMatchers("/api/cart/**").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
