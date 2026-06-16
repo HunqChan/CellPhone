@@ -35,6 +35,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/categories/**").permitAll()
                         // Cho phép truy cập danh sách tỉnh/thành phố, xã/phường (cho dropdown)
                         .requestMatchers("/api/locations/**").permitAll()
+                        // Cho phép đọc danh sách thuộc tính (màu sắc, dung lượng) cho bộ lọc
+                        .requestMatchers("/api/attributes/**").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
