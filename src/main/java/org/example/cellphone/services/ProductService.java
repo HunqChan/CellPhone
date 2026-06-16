@@ -3,6 +3,8 @@ package org.example.cellphone.services;
 import java.util.List;
 
 import org.example.cellphone.dto.CreateProductRequest;
+import org.example.cellphone.dto.PagedResponse;
+import org.example.cellphone.dto.ProductSearchRequest;
 import org.example.cellphone.entities.Product;
 import org.example.cellphone.entities.ProductVariant;
 
@@ -17,4 +19,9 @@ public interface ProductService {
     Product createProduct(CreateProductRequest request);
 
     ProductVariant addVariant(Long productId, ProductVariant variant);
-}
+
+    /**
+     * Lọc sản phẩm động theo nhiều tiêu chí kết hợp, có phân trang và sắp xếp.
+     */
+    PagedResponse<Product> filterProducts(ProductSearchRequest request);
+}

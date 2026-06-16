@@ -4,6 +4,8 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cellphone.dto.CreateProductRequest;
+import org.example.cellphone.dto.PagedResponse;
+import org.example.cellphone.dto.ProductSearchRequest;
 import org.example.cellphone.entities.Category;
 import org.example.cellphone.entities.Product;
 import org.example.cellphone.entities.ProductVariant;
@@ -11,6 +13,11 @@ import org.example.cellphone.repositories.CategoryRepository;
 import org.example.cellphone.repositories.ProductRepository;
 import org.example.cellphone.repositories.ProductVariantRepository;
 import org.example.cellphone.services.ProductService;
+import org.example.cellphone.specifications.ProductSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -69,5 +76,37 @@ public class ProductServiceImpl implements ProductService {
 
         // Bước 3: Lưu Variant vào database
         return productVariantRepository.save(variant);
+    }
+
+    // ==================== BỘ LỌC ĐỘNG + PHÂN TRANG ====================
+
+    @Override
+    public PagedResponse<Product> filterProducts(ProductSearchRequest request) {
+
+        // Xây dựng Sort — mặc định theo "id" nếu sortBy không hợp lệ
+        String sortBy = (request.getSortBy() != null && !request.getSortBy().isBlank())
+                ? request.getSortBy() : "id";
+        Sort.Direction direction = "desc".equalsIgnoreCase(request.getSortDir())
+                ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        // Xây dựng Pageable
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
+
+        // Thực thi query với Specification động
+        Page<Product> page = productRepository.findAll(
+                ProductSpecification.fromRequest(request),
+                pageable
+        );
+
+        // Map sang PagedResponse để trả về cho client
+        return new PagedResponse<>(
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isLast()
+        );
     }
 }

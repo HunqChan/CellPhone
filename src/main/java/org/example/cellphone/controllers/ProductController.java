@@ -4,6 +4,8 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cellphone.dto.CreateProductRequest;
+import org.example.cellphone.dto.PagedResponse;
+import org.example.cellphone.dto.ProductSearchRequest;
 import org.example.cellphone.entities.Product;
 import org.example.cellphone.entities.ProductVariant;
 import org.example.cellphone.services.ProductService;
@@ -53,4 +55,28 @@ public class ProductController {
             @RequestBody ProductVariant variant) {
         return ResponseEntity.ok(productService.addVariant(productId, variant));
     }
-}
+
+    /**
+     * POST /api/products/search
+     * Lọc sản phẩm động kết hợp nhiều tiêu chí: từ khóa, danh mục, hãng,
+     * khoảng giá, thuộc tính (màu sắc, dung lượng...), có phân trang và sắp xếp.
+     *
+     * Request Body ví dụ:
+     * {
+     *   "search": "iphone",
+     *   "brand": "Apple",
+     *   "minPrice": 10000000,
+     *   "maxPrice": 30000000,
+     *   "attributeValueIds": [1, 5],
+     *   "page": 0,
+     *   "size": 10,
+     *   "sortBy": "name",
+     *   "sortDir": "asc"
+     * }
+     */
+    @PostMapping("/search")
+    public ResponseEntity<PagedResponse<Product>> filterProducts(
+            @RequestBody ProductSearchRequest request) {
+        return ResponseEntity.ok(productService.filterProducts(request));
+    }
+}

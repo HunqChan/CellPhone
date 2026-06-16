@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -91,16 +90,20 @@ public class OrderController {
     }
 
     /**
-     * PUT /api/orders/{orderId}/status?status=SHIPPING
-     * Admin cập nhật trạng thái đơn hàng.
-     * Ví dụ: /api/orders/1/status?status=SHIPPING
-     *        /api/orders/1/status?status=DELIVERED
+     * PUT /api/orders/{orderId}/status
+     * [Admin] Cập nhật trạng thái đơn hàng theo vòng đời:
+     * PENDING_CONFIRMATION → CONFIRMED → SHIPPING → DELIVERED
+     *
+     * Request Body: { "status": "CONFIRMED" }
+     * Chỉ chấp nhận: PENDING_CONFIRMATION, CONFIRMED, SHIPPING, DELIVERED.
+     * Không thể cập nhật đơn đã CANCELED.
      */
     @PutMapping("/{orderId}/status")
     public ResponseEntity<?> updateOrderStatus(
             @PathVariable Long orderId,
-            @RequestParam String status) {
+            @RequestBody java.util.Map<String, String> body) {
         try {
+            String status = body.get("status");
             Order updatedOrder = orderService.updateOrderStatus(orderId, status);
             return ResponseEntity.ok(updatedOrder);
         } catch (RuntimeException e) {

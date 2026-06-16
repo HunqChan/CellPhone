@@ -200,20 +200,42 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAll();
     }
 
+    private static final java.util.Set<String> VALID_STATUSES = java.util.Set.of(
+            "PENDING_CONFIRMATION",  // Đang xác nhận
+            "CONFIRMED",            // Đã xác nhận
+            "SHIPPING",             // Đang giao hàng
+            "DELIVERED"             // Đã giao hàng
+    );
+
     /**
-     * Admin cập nhật trạng thái đơn hàng.
-     * Ví dụ: PENDING → SHIPPING → DELIVERED
+     * Admin cập nhật trạng thái đơn hàng theo workflow:
+     * PENDING_CONFIRMATION → CONFIRMED → SHIPPING → DELIVERED
      */
     @Override
     public Order updateOrderStatus(Long orderId, String status) {
+
+        // Validate trạng thái hợp lệ
+        if (status == null || !VALID_STATUSES.contains(status.toUpperCase())) {
+            throw new RuntimeException(
+                    "Trạng thái '" + status + "' không hợp lệ. "
+                    + "Chỉ chấp nhận: PENDING_CONFIRMATION, CONFIRMED, SHIPPING, DELIVERED"
+            );
+        }
 
         // Tìm đơn hàng
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException(
                         "Không tìm thấy đơn hàng với id: " + orderId));
 
-        // Cập nhật trạng thái mới
-        order.setStatus(status);
+        // Không cho phép thay đổi trạng thái đơn đã hủy
+        if ("CANCELED".equals(order.getStatus())) {
+            throw new RuntimeException(
+                    "Không thể cập nhật trạng thái đơn hàng #" + orderId
+                    + " vì đơn hàng đã bị hủy.");
+        }
+
+        // Cập nhật trạng thái mới (lưu ở dạng uppercase chuẩn)
+        order.setStatus(status.toUpperCase());
         return orderRepository.save(order);
     }
 }
