@@ -1,16 +1,12 @@
 package org.example.cellphone.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "product_variants")
@@ -23,10 +19,6 @@ public class ProductVariant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String color;
-
-    private String storage;
-
     private Double price;
 
     private Integer quantityInStock;
@@ -35,4 +27,12 @@ public class ProductVariant {
     @JoinColumn(name = "product_id")
     @JsonBackReference("product-variants")
     private Product product;
+
+    @ManyToMany
+    @JoinTable(
+            name = "product_variant_attributes",
+            joinColumns = @JoinColumn(name = "product_variant_id"),
+            inverseJoinColumns = @JoinColumn(name = "attribute_value_id")
+    )
+    private Set<AttributeValue> attributes;
 }

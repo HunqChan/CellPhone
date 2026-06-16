@@ -3,6 +3,7 @@ package org.example.cellphone.services.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cellphone.dto.CheckoutRequest;
@@ -61,11 +62,16 @@ public class OrderServiceImpl implements OrderService {
 
             // So sánh số lượng mua vs số lượng tồn kho
             if (cartItem.getQuantity() > variant.getQuantityInStock()) {
-                // Ném lỗi cụ thể với tên sản phẩm - màu - dung lượng
+                // Build mô tả variant từ các AttributeValue (ví dụ: "Đen, 128GB")
+                String variantDesc = variant.getAttributes() != null
+                        ? variant.getAttributes().stream()
+                                .map(av -> av.getAttribute().getName() + ": " + av.getValue())
+                                .collect(Collectors.joining(", "))
+                        : "N/A";
+                // Ném lỗi cụ thể với tên sản phẩm và thông số variant
                 throw new RuntimeException(
                         "Sản phẩm [" + variant.getProduct().getName()
-                                + " - " + variant.getColor()
-                                + " - " + variant.getStorage()
+                                + " - " + variantDesc
                                 + "] không đủ hàng trong kho"
                 );
             }
