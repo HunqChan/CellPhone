@@ -5,8 +5,8 @@ INSERT IGNORE INTO roles (id, name) VALUES (2, 'ROLE_ADMIN');
 -- Mật khẩu mặc định là '123456' đã được mã hóa BCrypt
 -- Tạo Users: 1 Admin và 1 Customer
 INSERT IGNORE INTO users (id, email, password, full_name, phone, role_id) VALUES 
-(1, 'admin@gmail.com', '$2a$10$W2neF9.6Agi6kAKVq8q3fec5dHW8KUA.b0VSIGdIZyGraww2M3G42', 'Quản Trị Viên', '0987654321', 2),
-(2, 'user@gmail.com', '$2a$10$W2neF9.6Agi6kAKVq8q3fec5dHW8KUA.b0VSIGdIZyGraww2M3G42', 'Khách Hàng 1', '0123456789', 1);
+(1, 'admin@gmail.com', '$2a$10$lUeABRXiyNwt6Y1C4MEpruU2YFD13CjdFGQAm3Mj0.OxjnWL.vBcm', 'Quản Trị Viên', '0987654321', 2),
+(2, 'user@gmail.com', '$2a$10$lUeABRXiyNwt6Y1C4MEpruU2YFD13CjdFGQAm3Mj0.OxjnWL.vBcm', 'Khách Hàng 1', '0123456789', 1);
 
 -- Tạo Categories (Danh mục)
 INSERT IGNORE INTO categories (id, name) VALUES 
