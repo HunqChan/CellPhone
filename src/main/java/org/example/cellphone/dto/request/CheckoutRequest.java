@@ -1,4 +1,4 @@
-package org.example.cellphone.dto;
+package org.example.cellphone.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
+public class CheckoutRequest {
 
-    private String email;
+    private Long userId;
 
-    private String password;
+    private Long addressId;
 }

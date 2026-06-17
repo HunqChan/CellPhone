@@ -1,21 +1,28 @@
 package org.example.cellphone.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.example.cellphone.dto.InventoryRequest;
+import org.example.cellphone.dto.request.InventoryRequest;
+import org.example.cellphone.dto.response.ProductVariantResponse;
 import org.example.cellphone.entities.ProductVariant;
+import org.example.cellphone.mapper.ProductMapper;
 import org.example.cellphone.services.InventoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.example.cellphone.dto.response.ApiResponse;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/inventory")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class InventoryController {
 
     private final InventoryService inventoryService;
+    private final ProductMapper productMapper;
 
     /**
      * POST /api/inventory/import
@@ -28,13 +35,9 @@ public class InventoryController {
      * }
      */
     @PostMapping("/import")
-    public ResponseEntity<?> importStock(@RequestBody InventoryRequest request) {
-        try {
-            ProductVariant updated = inventoryService.importStock(request);
-            return ResponseEntity.ok(updated);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<ProductVariantResponse>> importStock(@Valid @RequestBody InventoryRequest request) {
+        ProductVariant updated = inventoryService.importStock(request);
+        return ResponseEntity.ok(ApiResponse.success(productMapper.toResponse(updated)));
     }
 
     /**
@@ -49,12 +52,8 @@ public class InventoryController {
      * }
      */
     @PostMapping("/export")
-    public ResponseEntity<?> exportStock(@RequestBody InventoryRequest request) {
-        try {
-            ProductVariant updated = inventoryService.exportStock(request);
-            return ResponseEntity.ok(updated);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<ProductVariantResponse>> exportStock(@Valid @RequestBody InventoryRequest request) {
+        ProductVariant updated = inventoryService.exportStock(request);
+        return ResponseEntity.ok(ApiResponse.success(productMapper.toResponse(updated)));
     }
 }

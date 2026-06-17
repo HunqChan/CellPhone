@@ -3,7 +3,7 @@ package org.example.cellphone.services.impl;
 import java.util.ArrayList;
 
 import lombok.RequiredArgsConstructor;
-import org.example.cellphone.dto.AddToCartRequest;
+import org.example.cellphone.dto.request.AddToCartRequest;
 import org.example.cellphone.entities.Cart;
 import org.example.cellphone.entities.CartItem;
 import org.example.cellphone.entities.ProductVariant;

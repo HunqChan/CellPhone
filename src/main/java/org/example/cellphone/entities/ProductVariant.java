@@ -2,15 +2,14 @@ package org.example.cellphone.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "product_variants")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductVariant {
@@ -26,6 +25,8 @@ public class ProductVariant {
     @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonBackReference("product-variants")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Product product;
 
     @ManyToMany
@@ -34,5 +35,7 @@ public class ProductVariant {
             joinColumns = @JoinColumn(name = "product_variant_id"),
             inverseJoinColumns = @JoinColumn(name = "attribute_value_id")
     )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<AttributeValue> attributes;
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.example.cellphone.dto.CheckoutRequest;
+import org.example.cellphone.dto.request.CheckoutRequest;
 import org.example.cellphone.entities.Address;
 import org.example.cellphone.entities.Cart;
 import org.example.cellphone.entities.CartItem;

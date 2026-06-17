@@ -1,4 +1,4 @@
-package org.example.cellphone.dto;
+package org.example.cellphone.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

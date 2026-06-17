@@ -2,7 +2,7 @@ package org.example.cellphone.services;
 
 import java.util.List;
 
-import org.example.cellphone.dto.CheckoutRequest;
+import org.example.cellphone.dto.request.CheckoutRequest;
 import org.example.cellphone.entities.Order;
 
 public interface OrderService {

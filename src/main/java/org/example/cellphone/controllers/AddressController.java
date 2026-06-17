@@ -3,8 +3,10 @@ package org.example.cellphone.controllers;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.example.cellphone.dto.AddressRequest;
+import org.example.cellphone.dto.request.AddressRequest;
 import org.example.cellphone.entities.Address;
+import org.example.cellphone.dto.response.AddressResponse;
+import org.example.cellphone.mapper.AddressMapper;
 import org.example.cellphone.services.AddressService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,13 +18,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.example.cellphone.dto.response.ApiResponse;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/addresses")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('CUSTOMER')")
 public class AddressController {
 
     private final AddressService addressService;
+    private final AddressMapper addressMapper;
 
     /**
      * POST /api/addresses
@@ -30,13 +37,9 @@ public class AddressController {
      * Request Body: { "userId": 1, "provinceId": 1, "wardId": 5, "detailAddress": "123 Đường ABC", "isDefault": false }
      */
     @PostMapping
-    public ResponseEntity<?> addAddress(@RequestBody AddressRequest request) {
-        try {
-            Address address = addressService.addAddress(request);
-            return ResponseEntity.ok(address);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<AddressResponse>> addAddress(@Valid @RequestBody AddressRequest request) {
+        Address address = addressService.addAddress(request);
+        return ResponseEntity.ok(ApiResponse.success(addressMapper.toResponse(address), "Thêm địa chỉ thành công"));
     }
 
     /**
@@ -44,8 +47,8 @@ public class AddressController {
      * Lấy danh sách địa chỉ của User.
      */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Address>> getAddressesByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(addressService.getAddressesByUserId(userId));
+    public ResponseEntity<ApiResponse<List<AddressResponse>>> getAddressesByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(ApiResponse.success(addressService.getAddressesByUserId(userId).stream().map(addressMapper::toResponse).toList()));
     }
 
     /**
@@ -54,15 +57,11 @@ public class AddressController {
      * Request Body: { "provinceId": 2, "wardId": 10, "detailAddress": "456 Đường XYZ", "isDefault": true }
      */
     @PutMapping("/{addressId}")
-    public ResponseEntity<?> updateAddress(
+    public ResponseEntity<ApiResponse<AddressResponse>> updateAddress(
             @PathVariable Long addressId,
-            @RequestBody AddressRequest request) {
-        try {
-            Address address = addressService.updateAddress(addressId, request);
-            return ResponseEntity.ok(address);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            @Valid @RequestBody AddressRequest request) {
+        Address address = addressService.updateAddress(addressId, request);
+        return ResponseEntity.ok(ApiResponse.success(addressMapper.toResponse(address), "Cập nhật địa chỉ thành công"));
     }
 
     /**
@@ -70,13 +69,9 @@ public class AddressController {
      * Xóa địa chỉ.
      */
     @DeleteMapping("/{addressId}")
-    public ResponseEntity<?> deleteAddress(@PathVariable Long addressId) {
-        try {
-            addressService.deleteAddress(addressId);
-            return ResponseEntity.ok("Đã xóa địa chỉ thành công");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<String>> deleteAddress(@PathVariable Long addressId) {
+        addressService.deleteAddress(addressId);
+        return ResponseEntity.ok(ApiResponse.success("Đã xóa địa chỉ thành công"));
     }
 
     /**
@@ -84,14 +79,10 @@ public class AddressController {
      * Đặt địa chỉ làm mặc định.
      */
     @PutMapping("/{addressId}/default")
-    public ResponseEntity<?> setDefaultAddress(
+    public ResponseEntity<ApiResponse<AddressResponse>> setDefaultAddress(
             @PathVariable Long addressId,
             @RequestParam Long userId) {
-        try {
-            Address address = addressService.setDefaultAddress(userId, addressId);
-            return ResponseEntity.ok(address);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Address address = addressService.setDefaultAddress(userId, addressId);
+        return ResponseEntity.ok(ApiResponse.success(addressMapper.toResponse(address), "Đã đặt làm địa chỉ mặc định"));
     }
 }

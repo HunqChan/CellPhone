@@ -1,8 +1,8 @@
 package org.example.cellphone.services;
 
-import org.example.cellphone.dto.AuthResponse;
-import org.example.cellphone.dto.LoginRequest;
-import org.example.cellphone.dto.RegisterRequest;
+import org.example.cellphone.dto.response.AuthResponse;
+import org.example.cellphone.dto.request.LoginRequest;
+import org.example.cellphone.dto.request.RegisterRequest;
 
 public interface AuthService {
 

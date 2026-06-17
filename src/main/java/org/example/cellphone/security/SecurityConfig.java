@@ -5,9 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -30,14 +33,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Cho phép truy cập tự do các API đăng ký, đăng nhập
                         .requestMatchers("/api/auth/**").permitAll()
-                        // Cho phép xem sản phẩm và danh mục mà không cần đăng nhập
-                        .requestMatchers("/api/products/**").permitAll()
-                        .requestMatchers("/api/categories/**").permitAll()
-                        // Cho phép truy cập danh sách tỉnh/thành phố, xã/phường (cho dropdown)
-                        .requestMatchers("/api/locations/**").permitAll()
-                        // Cho phép đọc danh sách thuộc tính (màu sắc, dung lượng) cho bộ lọc
-                        .requestMatchers("/api/attributes/**").permitAll()
-                        .requestMatchers("/api/cart/**").permitAll()
+                        // Cho phép xem sản phẩm, danh mục, địa điểm, thuộc tính mà không cần đăng nhập
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/locations/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/attributes/**").permitAll()
+                        // Tìm kiếm sản phẩm (bộ lọc)
+                        .requestMatchers(HttpMethod.POST, "/api/products/search").permitAll()
+                        // Swagger UI
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

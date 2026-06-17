@@ -3,15 +3,14 @@ package org.example.cellphone.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "attribute_values")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttributeValue {
@@ -26,9 +25,13 @@ public class AttributeValue {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_id", nullable = false)
     @JsonBackReference("attribute-values")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Attribute attribute;
 
     @ManyToMany(mappedBy = "attributes")
     @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<ProductVariant> productVariants;
 }

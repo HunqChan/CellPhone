@@ -1,4 +1,4 @@
-package org.example.cellphone.dto;
+package org.example.cellphone.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
+public class AuthResponse {
 
-    private String fullName;
+    private String token;
 
     private String email;
 
-    private String password;
+    private String fullName;
 
-    private String phone;
+    private String role;
 }

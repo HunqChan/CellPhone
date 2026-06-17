@@ -1,9 +1,9 @@
 package org.example.cellphone.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.cellphone.dto.AuthResponse;
-import org.example.cellphone.dto.LoginRequest;
-import org.example.cellphone.dto.RegisterRequest;
+import org.example.cellphone.dto.response.AuthResponse;
+import org.example.cellphone.dto.request.LoginRequest;
+import org.example.cellphone.dto.request.RegisterRequest;
 import org.example.cellphone.entities.Role;
 import org.example.cellphone.entities.User;
 import org.example.cellphone.repositories.RoleRepository;

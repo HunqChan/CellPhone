@@ -1,7 +1,7 @@
 package org.example.cellphone.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.cellphone.dto.InventoryRequest;
+import org.example.cellphone.dto.request.InventoryRequest;
 import org.example.cellphone.entities.ProductVariant;
 import org.example.cellphone.repositories.ProductVariantRepository;
 import org.example.cellphone.services.InventoryService;

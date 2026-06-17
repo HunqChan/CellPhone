@@ -2,7 +2,7 @@ package org.example.cellphone.services;
 
 import java.util.List;
 
-import org.example.cellphone.dto.AddressRequest;
+import org.example.cellphone.dto.request.AddressRequest;
 import org.example.cellphone.entities.Address;
 
 public interface AddressService {

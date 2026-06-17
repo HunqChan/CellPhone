@@ -1,7 +1,7 @@
 package org.example.cellphone.specifications;
 
 import jakarta.persistence.criteria.*;
-import org.example.cellphone.dto.ProductSearchRequest;
+import org.example.cellphone.dto.request.ProductSearchRequest;
 import org.example.cellphone.entities.AttributeValue;
 import org.example.cellphone.entities.Product;
 import org.example.cellphone.entities.ProductVariant;

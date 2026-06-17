@@ -3,8 +3,10 @@ package org.example.cellphone.controllers;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.example.cellphone.dto.CheckoutRequest;
+import org.example.cellphone.dto.request.CheckoutRequest;
 import org.example.cellphone.entities.Order;
+import org.example.cellphone.dto.response.OrderResponse;
+import org.example.cellphone.mapper.OrderMapper;
 import org.example.cellphone.services.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.example.cellphone.dto.response.ApiResponse;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderMapper orderMapper;
 
     // ==================== CHECKOUT ====================
 
@@ -30,13 +36,10 @@ public class OrderController {
      * Request Body: { "userId": 1, "addressId": 5 }
      */
     @PostMapping("/checkout")
-    public ResponseEntity<?> checkout(@RequestBody CheckoutRequest request) {
-        try {
-            Order order = orderService.checkout(request);
-            return ResponseEntity.ok(order);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ApiResponse<OrderResponse>> checkout(@Valid @RequestBody CheckoutRequest request) {
+        Order order = orderService.checkout(request);
+        return ResponseEntity.ok(ApiResponse.success(orderMapper.toResponse(order), "Đặt hàng thành công"));
     }
 
     // ==================== KHÁCH HÀNG ====================
@@ -46,8 +49,9 @@ public class OrderController {
      * Lấy lịch sử đơn hàng của User (sắp xếp theo ngày mới nhất).
      */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(orderService.getOrdersByUserId(userId));
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getOrdersByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(ApiResponse.success(orderService.getOrdersByUserId(userId).stream().map(orderMapper::toResponse).toList()));
     }
 
     /**
@@ -55,12 +59,9 @@ public class OrderController {
      * Lấy chi tiết một đơn hàng.
      */
     @GetMapping("/{orderId}")
-    public ResponseEntity<?> getOrderById(@PathVariable Long orderId) {
-        try {
-            return ResponseEntity.ok(orderService.getOrderById(orderId));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
+    public ResponseEntity<ApiResponse<OrderResponse>> getOrderById(@PathVariable Long orderId) {
+        return ResponseEntity.ok(ApiResponse.success(orderMapper.toResponse(orderService.getOrderById(orderId))));
     }
 
     /**
@@ -69,13 +70,10 @@ public class OrderController {
      * Tự động hoàn trả số lượng kho.
      */
     @PutMapping("/{orderId}/cancel")
-    public ResponseEntity<?> cancelOrder(@PathVariable Long orderId) {
-        try {
-            Order canceledOrder = orderService.cancelOrder(orderId);
-            return ResponseEntity.ok(canceledOrder);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<ApiResponse<OrderResponse>> cancelOrder(@PathVariable Long orderId) {
+        Order canceledOrder = orderService.cancelOrder(orderId);
+        return ResponseEntity.ok(ApiResponse.success(orderMapper.toResponse(canceledOrder), "Hủy đơn hàng thành công"));
     }
 
     // ==================== ADMIN ====================
@@ -85,8 +83,9 @@ public class OrderController {
      * Admin xem tất cả đơn hàng trong hệ thống.
      */
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getAllOrders() {
+        return ResponseEntity.ok(ApiResponse.success(orderService.getAllOrders().stream().map(orderMapper::toResponse).toList()));
     }
 
     /**
@@ -99,16 +98,13 @@ public class OrderController {
      * Không thể cập nhật đơn đã CANCELED.
      */
     @PutMapping("/{orderId}/status")
-    public ResponseEntity<?> updateOrderStatus(
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<OrderResponse>> updateOrderStatus(
             @PathVariable Long orderId,
             @RequestBody java.util.Map<String, String> body) {
-        try {
-            String status = body.get("status");
-            Order updatedOrder = orderService.updateOrderStatus(orderId, status);
-            return ResponseEntity.ok(updatedOrder);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String status = body.get("status");
+        Order updatedOrder = orderService.updateOrderStatus(orderId, status);
+        return ResponseEntity.ok(ApiResponse.success(orderMapper.toResponse(updatedOrder), "Cập nhật trạng thái thành công"));
     }
 }
 

@@ -3,7 +3,7 @@ package org.example.cellphone.services.impl;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.example.cellphone.dto.AddressRequest;
+import org.example.cellphone.dto.request.AddressRequest;
 import org.example.cellphone.entities.Address;
 import org.example.cellphone.entities.Province;
 import org.example.cellphone.entities.User;

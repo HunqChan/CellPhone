@@ -1,6 +1,6 @@
 package org.example.cellphone.services;
 
-import org.example.cellphone.dto.InventoryRequest;
+import org.example.cellphone.dto.request.InventoryRequest;
 import org.example.cellphone.entities.ProductVariant;
 
 public interface InventoryService {
