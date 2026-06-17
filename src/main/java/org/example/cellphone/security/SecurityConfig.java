@@ -33,19 +33,30 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Cho phép truy cập tự do các API đăng ký, đăng nhập
                         .requestMatchers("/api/auth/**").permitAll()
-                        // Cho phép xem sản phẩm, danh mục, địa điểm, thuộc tính mà không cần đăng nhập
+                        
+                        // Các API công khai: xem và tìm kiếm sản phẩm, danh mục, địa điểm, thuộc tính
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/locations/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/attributes/**").permitAll()
-                        // Tìm kiếm sản phẩm (bộ lọc)
                         .requestMatchers(HttpMethod.POST, "/api/products/search").permitAll()
+                        
                         // Swagger UI
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+
+                        // Quyền Admin: quản lý tạo/sửa/xóa sản phẩm, danh mục, thuộc tính, kho hàng
+                        .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/categories/**", "/api/attributes/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/categories/**", "/api/attributes/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/categories/**", "/api/attributes/**").hasRole("ADMIN")
+                        .requestMatchers("/api/inventory/**").hasRole("ADMIN")
+
+                        // Quyền User: giỏ hàng, checkout, đơn hàng, địa chỉ
+                        .requestMatchers("/api/cart/**", "/api/orders/**", "/api/addresses/**").hasAnyRole("CUSTOMER", "ADMIN")
+
                         // Tất cả các request còn lại phải đăng nhập
                         .anyRequest().authenticated()
                 )
