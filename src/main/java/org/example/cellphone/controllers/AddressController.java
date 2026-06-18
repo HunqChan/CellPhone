@@ -37,6 +37,7 @@ public class AddressController {
      * Request Body: { "userId": 1, "provinceId": 1, "wardId": 5, "detailAddress": "123 Đường ABC", "isDefault": false }
      */
     @PostMapping
+    @PreAuthorize("#request.userId == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<AddressResponse>> addAddress(@Valid @RequestBody AddressRequest request) {
         Address address = addressService.addAddress(request);
         return ResponseEntity.ok(ApiResponse.success(addressMapper.toResponse(address), "Thêm địa chỉ thành công"));
@@ -47,6 +48,7 @@ public class AddressController {
      * Lấy danh sách địa chỉ của User.
      */
     @GetMapping("/user/{userId}")
+    @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<AddressResponse>>> getAddressesByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(ApiResponse.success(addressService.getAddressesByUserId(userId).stream().map(addressMapper::toResponse).toList()));
     }
@@ -79,6 +81,7 @@ public class AddressController {
      * Đặt địa chỉ làm mặc định.
      */
     @PutMapping("/{addressId}/default")
+    @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<AddressResponse>> setDefaultAddress(
             @PathVariable Long addressId,
             @RequestParam Long userId) {

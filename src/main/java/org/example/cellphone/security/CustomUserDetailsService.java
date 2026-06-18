@@ -24,7 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user với email: " + email));
 
         // Chuyển đổi Role entity thành GrantedAuthority cho Spring Security
-        return new org.springframework.security.core.userdetails.User(
+        // Dùng CustomUserDetails để lưu thêm id của user, phục vụ kiểm tra quyền sở hữu
+        return new CustomUserDetails(
+                user.getId(),
                 user.getEmail(),
                 user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName()))

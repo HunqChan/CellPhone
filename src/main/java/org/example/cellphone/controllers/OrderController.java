@@ -36,7 +36,7 @@ public class OrderController {
      * Request Body: { "userId": 1, "addressId": 5 }
      */
     @PostMapping("/checkout")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("#request.userId == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<OrderResponse>> checkout(@Valid @RequestBody CheckoutRequest request) {
         Order order = orderService.checkout(request);
         return ResponseEntity.ok(ApiResponse.success(orderMapper.toResponse(order), "Đặt hàng thành công"));
@@ -49,7 +49,7 @@ public class OrderController {
      * Lấy lịch sử đơn hàng của User (sắp xếp theo ngày mới nhất).
      */
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<OrderResponse>>> getOrdersByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(ApiResponse.success(orderService.getOrdersByUserId(userId).stream().map(orderMapper::toResponse).toList()));
     }

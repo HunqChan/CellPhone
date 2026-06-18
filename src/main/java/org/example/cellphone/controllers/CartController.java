@@ -27,12 +27,14 @@ public class CartController {
 
     // GET /api/cart/1 -> lấy giỏ hàng của user có id=1
     @GetMapping("/{userId}")
+    @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<CartResponse>> getCart(@PathVariable Long userId) {
         return ResponseEntity.ok(ApiResponse.success(cartMapper.toResponse(cartService.getCartByUserId(userId))));
     }
 
     // POST /api/cart/1/add -> thêm sản phẩm vào giỏ hàng của user có id=1
     @PostMapping("/{userId}/add")
+    @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<CartResponse>> addToCart(
             @PathVariable Long userId,
             @RequestBody AddToCartRequest request) {
