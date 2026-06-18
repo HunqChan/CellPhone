@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cellphone.dto.request.CheckoutRequest;
+import org.example.cellphone.dto.request.UpdateOrderStatusRequest;
 import org.example.cellphone.entities.Order;
 import org.example.cellphone.dto.response.OrderResponse;
 import org.example.cellphone.mapper.OrderMapper;
@@ -101,9 +102,8 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<OrderResponse>> updateOrderStatus(
             @PathVariable Long orderId,
-            @RequestBody java.util.Map<String, String> body) {
-        String status = body.get("status");
-        Order updatedOrder = orderService.updateOrderStatus(orderId, status);
+            @Valid @RequestBody UpdateOrderStatusRequest request) {
+        Order updatedOrder = orderService.updateOrderStatus(orderId, request.getStatus());
         return ResponseEntity.ok(ApiResponse.success(orderMapper.toResponse(updatedOrder), "Cập nhật trạng thái thành công"));
     }
 }
