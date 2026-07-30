@@ -51,8 +51,9 @@ public class AuthServiceImpl implements AuthService {
         // Bước 5: Tạo JWT token cho user vừa đăng ký (tự động đăng nhập sau khi đăng ký)
         String token = jwtUtil.generateToken(user.getEmail());
 
-        // Bước 6: Trả về response chứa token và thông tin user
-        return new AuthResponse(token, user.getEmail(), user.getFullName(), customerRole.getName());
+        // Bước 6: Trả về response chứa token và thông tin user (bỏ prefix ROLE_ cho frontend)
+        String roleName = customerRole.getName().replace("ROLE_", "");
+        return new AuthResponse(user.getId(), token, user.getEmail(), user.getFullName(), roleName);
     }
 
     @Override
@@ -70,7 +71,8 @@ public class AuthServiceImpl implements AuthService {
         // Bước 3: Tạo JWT token
         String token = jwtUtil.generateToken(user.getEmail());
 
-        // Bước 4: Trả về response
-        return new AuthResponse(token, user.getEmail(), user.getFullName(), user.getRole().getName());
+        // Bước 4: Trả về response (bỏ prefix ROLE_ để frontend so sánh dễ hơn)
+        String roleName = user.getRole().getName().replace("ROLE_", "");
+        return new AuthResponse(user.getId(), token, user.getEmail(), user.getFullName(), roleName);
     }
 }
