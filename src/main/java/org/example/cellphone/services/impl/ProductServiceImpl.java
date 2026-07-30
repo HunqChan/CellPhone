@@ -134,6 +134,33 @@ public class ProductServiceImpl implements ProductService {
         return productVariantRepository.save(variant);
     }
 
+    @Override
+    public ProductVariant updateVariant(Long variantId, CreateVariantRequest request) {
+        ProductVariant variant = productVariantRepository.findById(variantId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy biến thể với id: " + variantId));
+
+        if (request.getPrice() != null) variant.setPrice(request.getPrice());
+        if (request.getQuantityInStock() != null) variant.setQuantityInStock(request.getQuantityInStock());
+
+        // Cập nhật attributes nếu có
+        if (request.getAttributeValueIds() != null) {
+            Set<AttributeValue> attributeValues = new HashSet<>(
+                    attributeValueRepository.findAllById(request.getAttributeValueIds())
+            );
+            variant.setAttributes(attributeValues);
+        }
+
+        return productVariantRepository.save(variant);
+    }
+
+    @Override
+    public void deleteVariant(Long variantId) {
+        if (!productVariantRepository.existsById(variantId)) {
+            throw new RuntimeException("Không tìm thấy biến thể với id: " + variantId);
+        }
+        productVariantRepository.deleteById(variantId);
+    }
+
     // ==================== BỘ LỌC ĐỘNG + PHÂN TRANG ====================
 
     @Override

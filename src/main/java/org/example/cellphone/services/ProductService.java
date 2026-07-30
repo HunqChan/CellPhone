@@ -36,6 +36,12 @@ public interface ProductService {
 
     ProductVariant addVariant(Long productId, CreateVariantRequest request);
 
+    /** Cập nhật giá và thuộc tính của biến thể. */
+    ProductVariant updateVariant(Long variantId, CreateVariantRequest request);
+
+    /** Xóa biến thể theo ID. */
+    void deleteVariant(Long variantId);
+
     /**
      * Lọc sản phẩm động theo nhiều tiêu chí kết hợp, có phân trang và sắp xếp.
      */

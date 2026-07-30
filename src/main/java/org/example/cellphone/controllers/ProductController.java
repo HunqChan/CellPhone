@@ -84,13 +84,32 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.success("Đã xóa sản phẩm id: " + id));
     }
 
-    // POST /api/products/1/variants -> thêm biến thể cho sản phẩm id=1
+    // POST /api/products/{productId}/variants -> thêm biến thể cho sản phẩm
     @PostMapping("/{productId}/variants")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<ProductVariantResponse>> addVariant(
             @PathVariable Long productId,
             @Valid @RequestBody CreateVariantRequest request) {
         return ResponseEntity.ok(ApiResponse.success(productMapper.toResponse(productService.addVariant(productId, request)), "Thêm biến thể thành công"));
+    }
+
+    // PUT /api/products/variants/{variantId} -> cập nhật biến thể
+    @PutMapping("/variants/{variantId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<ProductVariantResponse>> updateVariant(
+            @PathVariable Long variantId,
+            @Valid @RequestBody CreateVariantRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(
+                productMapper.toResponse(productService.updateVariant(variantId, request)),
+                "Cập nhật biến thể thành công"));
+    }
+
+    // DELETE /api/products/variants/{variantId} -> xóa biến thể
+    @DeleteMapping("/variants/{variantId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<String>> deleteVariant(@PathVariable Long variantId) {
+        productService.deleteVariant(variantId);
+        return ResponseEntity.ok(ApiResponse.success("Đã xóa biến thể id: " + variantId));
     }
 
     /**

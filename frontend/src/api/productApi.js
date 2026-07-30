@@ -7,9 +7,13 @@ export const productApi = {
   search: (query) => axiosInstance.get(`/products?search=${encodeURIComponent(query)}`),
   filter: (request) => axiosInstance.post('/products/search', request),
 
-  // Admin
+  // Admin – Product CRUD
   create: (data) => axiosInstance.post('/products', data),
   update: (id, data) => axiosInstance.put(`/products/${id}`, data),
   delete: (id) => axiosInstance.delete(`/products/${id}`),
+
+  // Admin – Variant CRUD
   addVariant: (productId, data) => axiosInstance.post(`/products/${productId}/variants`, data),
+  updateVariant: (variantId, data) => axiosInstance.put(`/products/variants/${variantId}`, data),
+  deleteVariant: (variantId) => axiosInstance.delete(`/products/variants/${variantId}`),
 }
